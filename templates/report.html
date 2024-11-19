@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Análise de Log</title>
+</head>
+<body>
+    <h1></h1>Relatório de Análise de Log</h1>
+    <h2>Ataque XSS</h2>
+    <ul>
+        {% for ip, informacoes in dic_ataque_xss.items() %}
+        <li>IP: {{ ip }}</li>
+            <ul>
+                {% for info in informacoes %}
+                <li>Requisição feita: {{ info['requisicao'] }}</li>
+                <li>Padrão detectado como suspeito: {{ info['motivo'] }} </li>
+                <li>Data: {{ info ['data'] }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </ul>
+</body>
+</html>
