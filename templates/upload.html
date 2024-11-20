@@ -1,15 +1,41 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Log Analyzer</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Analisador de Logs Web</title>
+        <link rel="stylesheet" href="static/styleupload.css">
+    </head>
 <body>
-    <h1>Upload Access Log</h1>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <input type="file" name="logfile" accept=".log">
-        <button type="submit">Upload and Analyze</button>
-    </form>
+    <header>
+        <h1>Analisador de Logs Web</h1>
+    </header>
+    <main>
+        <section class="description">
+            <p>
+                Bem-vindo ao Analisador de Logs Web. Este programa permite que você carregue
+                arquivos de log de acesso para análise. Nosso sistema detecta ameaças
+                suspeitas e ajuda a identificar atividades maliciosas em seu servidor.
+                É importante que você carregue logs no formato combined. A análise pode demorar alguns segundos a depender do tamanho do seu log.
+            </p>
+        </section>
+        <section class="upload-form">
+            <h2>Carregar Arquivo de Log</h2>
+            <form action="/" method="post" enctype="multipart/form-data">
+                <input type="file" name="logfile" accept=".log" class="file-input">
+                <button type="submit" class="btn-upload">Carregar e Analisar</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <section class="developers">
+            <h3>Desenvolvedores</h3>
+            <p>Este projeto foi desenvolvido por:</p>
+            <ul>
+                <li>Bruna Lima Meinberg</li>
+                <li>Luana Wilner Abramoff</li>
+            </ul>
+        </section>
+    </footer>
 </body>
 </html>

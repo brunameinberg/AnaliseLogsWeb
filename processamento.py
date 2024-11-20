@@ -309,4 +309,4 @@ def processando_dados(file_path):
 
     return data_ataque
 
-processando_dados('access.log')
+#processando_dados('access.log')
