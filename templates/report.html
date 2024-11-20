@@ -4,21 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Análise de Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1></h1>Relatório de Análise de Log</h1>
-    <h2>Ataque XSS</h2>
-    <ul>
-        {% for ip, informacoes in dic_ataque_xss.items() %}
-        <li>IP: {{ ip }}</li>
-            <ul>
-                {% for info in informacoes %}
-                <li>Requisição feita: {{ info['requisicao'] }}</li>
-                <li>Padrão detectado como suspeito: {{ info['motivo'] }} </li>
-                <li>Data: {{ info ['data'] }}</li>
+    <header>
+        <h1>Relatório de Análise de Log</h1>
+    </header>
+    <main>
+        {% for key, attack in dic_ataque.items() %}
+        <section id="{{ key }}" class="attack-section">
+            <h2>{{ attack['title'] }}</h2>
+            <div class="ip-list">
+                {% for ip, details in attack['ips'].items() %}
+                <div class="ip-item">
+                    <strong>IP:</strong> {{ ip }}
+                    <span class="show-details">[Exibir detalhes]</span>
+                    <div class="details" style="display: none;">
+                        {% for detail in details %}
+                        <p><strong>{{ loop.index }}.</strong> Requisição: {{ detail['requisicao'] }}<br>
+                        Motivo: {{ detail['motivo'] }}<br>
+                        Data: {{ detail['data'] }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
+            <button class="load-more" data-section="{{ key }}">Carregar mais</button>
+        </section>
+                
         {% endfor %}
-    </ul>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

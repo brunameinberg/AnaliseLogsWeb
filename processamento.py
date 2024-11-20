@@ -131,7 +131,7 @@ def resposta_positiva_ataque(logs_post):
 #Navegadores Suspeitos
 def navegador_suspeito(logs_post): 
     logs_suspeitos = defaultdict(list)
-    navegador_nao_suspeitos=['Mozilla', 'Chrome', 'Safari', 'Opera', 'Edge', 'Trident']
+    navegador_nao_suspeitos=['Mozilla', 'Chrome', 'Safari', 'Opera', 'Edge', 'Trident', 'Microsoft']
 
     for key, value in logs_post.items():
         #if value['referenciador'] == '"-"':
@@ -139,7 +139,7 @@ def navegador_suspeito(logs_post):
         #    value['motivo'] = [motivo]
         #    logs_suspeitos[key] = value
         if value['navegador'].split('/')[0] not in navegador_nao_suspeitos:
-            motivo = "Navegador suspeito ou desconhecido"
+            motivo = f"Navegador suspeito ou desconhecido: {value['navegador'].split('/')[0]}"
             value['motivo'] = [motivo]
             logs_suspeitos[value['ip']].append({'requisicao': value['requisicao'], 'motivo': value['motivo'], 'data': value['data']})
 
@@ -252,10 +252,61 @@ def identifica_caminhos_suspeitos(info_logs):
 
     return requisicoes_suspeitas
 
+def produzindo_estatisticas (dados_ataque):
+    ip_por_numero_requisicao = defaultdict(dict)
+
+    for key, value in dados_ataque.items():
+        for ip in sorted(value['ips'].keys(), key=lambda k: len(value['ips'][k]), reverse=True):
+            if len(ip_por_numero_requisicao[key]) >= 5:
+                break
+            ip_por_numero_requisicao[key][ip] = len(value['ips'][ip])
+
+    return ip_por_numero_requisicao
+    
 
 def processando_dados(file_path):
     linhas_log = ler_arquivo(file_path)
     #Separa em dicionário nas categorias: IP, id_cliente, usuario, data, requisicao, status, bytes_resposta, referenciador, navegador
     dicionario_log = extrai_info_log(linhas_log)
 
-    return ataque_xss(dicionario_log), sql_injection(dicionario_log), ddos(dicionario_log), resposta_positiva_ataque(dicionario_log), navegador_suspeito(dicionario_log), directory_transversal_e_lfi(dicionario_log)[0], directory_transversal_e_lfi(dicionario_log)[1], identifica_caminhos_suspeitos(dicionario_log)
+    data_ataque = {
+        "xss" : {
+            "title": "Ataque XSS",
+            "ips" : ataque_xss(dicionario_log)
+        },
+        "sql injection" : {
+            "title": "Injeção SQL",
+            "ips" : sql_injection(dicionario_log)
+        },
+        "ddos" : {
+            "title": "Ataque DDoS",
+            "ips": ddos(dicionario_log)
+        },
+        "resposta positiva": {
+            "title": "Possível resposta positiva para um ataque (Detecção de mudança de bytes)",
+            "ips": resposta_positiva_ataque(dicionario_log)
+        },
+        "navegador suspeito": {
+            "title": "Navegador Suspeito",
+            "ips": navegador_suspeito(dicionario_log)
+        },
+        "lfi": {
+            "title": "Suspeita de LFI",
+            "ips": directory_transversal_e_lfi(dicionario_log)[0]
+        },
+        "directory transversal": {
+            "title": "Directory Transversal",
+            "ips": directory_transversal_e_lfi(dicionario_log)[1]
+        },
+        "caminhos suspeitos": {
+            "title": "Caminhos Suspeitos Identificados",
+            "ips": identifica_caminhos_suspeitos(dicionario_log)
+        }
+
+    }
+
+    print(produzindo_estatisticas(data_ataque))
+
+    return data_ataque
+
+processando_dados('access.log')

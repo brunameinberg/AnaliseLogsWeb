@@ -26,8 +26,8 @@ def upload():
 @app.route('/relatorio/<filename>')
 def relatorio(filename):
     file_path = os.path.join(UPLOAD_FOLDER, filename)
-    dic_ataque_xss, dic_sql_injection, dic_ddos, dic_resposta_positiva_ataque, dic_navegador_suspeito, dic_lfi, dic_directory_transversal, dic_caminhos_suspeitos = processando_dados(file_path)
-    return render_template('report.html', dic_ataque_xss=dic_ataque_xss, dic_sql_injection=dic_sql_injection, dic_ddos=dic_ddos, dic_resposta_positiva_ataque=dic_resposta_positiva_ataque, dic_navegador_suspeito=dic_navegador_suspeito, dic_lfi=dic_lfi, dic_directory_transversal=dic_directory_transversal, dic_caminhos_suspeitos=dic_caminhos_suspeitos)
+    dic_ataque = processando_dados(file_path)
+    return render_template('report.html', dic_ataque=dic_ataque)
 
 
 if __name__ == '__main__':
