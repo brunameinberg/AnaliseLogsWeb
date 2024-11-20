@@ -10,7 +10,8 @@ O **Analisador de Logs Web** é uma ferramenta para análise de logs de acesso a
 - **Detecção de Respostas Positivas a Ataques**: Verifica mudanças no tamanho da resposta para requisições iguais.
 - **Navegadores Suspeitos**: Analisa o agente do usuário para identificar navegadores desconhecidos ou maliciosos.
 - **Directory Transversal e LFI**: Detecta tentativas de acessar arquivos confidenciais ou explorar falhas locais.
-- **Caminhos Suspeitos**: Identifica acessos a caminhos críticos como `/admin`, `/login` ou arquivos de configuração sensíveis.
+- **Caminhos Suspeitos**: Identifica acessos a caminhos críticos como `/admin` ou arquivos de configuração sensíveis.
+- **Brute Force**:  Identifica acessos múltiplos a caminhos críticos do processo de login e autenticação como `/auth`
 - **Estatísticas Detalhadas**: Gera estatísticas com os IPs mais ativos em cada tipo de ataque.
 
 ## 🛠️ Tecnologias Utilizadas
