@@ -54,7 +54,7 @@ project/
 ## 📋 Pré-requisitos
 
 - **Python 3.8 ou superior**.
-- Dependências: `pip install -r requirements.txt`
+- Dependências: `pip install flask`
 
 ## 🖥️ Execução Local
 
