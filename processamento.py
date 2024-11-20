@@ -272,7 +272,7 @@ def brute_force_senha(dados_ataque, intervalo_segundos=10, limite_requisicoes=5)
 
     logs_post = {}
     for i in range(len(dados_ataque)):
-        if 'POST' in dados_ataque[i]['requisicao']:
+        if 'POST' in dados_ataque[i]['requisicao'] or 'PUT' in dados_ataque[i]['requisicao'] or 'PATCH' in dados_ataque[i]['requisicao'] or 'DELETE' in dados_ataque[i]['requisicao']:
             for caminho in caminhos_login:
                 if caminho in dados_ataque[i]['requisicao']:
                     logs_post[i] = {**dados_ataque[i], 'caminho': caminho}
