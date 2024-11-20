@@ -262,6 +262,59 @@ def produzindo_estatisticas (dados_ataque):
             ip_por_numero_requisicao[key][ip] = len(value['ips'][ip])
 
     return ip_por_numero_requisicao
+
+def brute_force_senha(dados_ataque, intervalo_segundos=10, limite_requisicoes=5):
+    # Definir caminhos relacionados a login/senha
+    caminhos_login = [
+        '/login', '/signin', '/auth', '/authentication', '/user/login',
+        '/admin/login', '/api/login', '/wp-login.php', '/dashboard/auth'
+    ]
+
+    logs_post = {}
+    for i in range(len(dados_ataque)):
+        if 'POST' in dados_ataque[i]['requisicao']:
+            for caminho in caminhos_login:
+                if caminho in dados_ataque[i]['requisicao']:
+                    logs_post[i] = {**dados_ataque[i], 'caminho': caminho}
+                    break
+
+    logs_suspeitos = defaultdict(list)
+    ip_atividades = {}
+
+    for key, value in logs_post.items():
+        ip = value['ip']
+        data = datetime.strptime(value['data'], '%d/%b/%Y:%H:%M:%S')
+
+        if ip not in ip_atividades:
+            ip_atividades[ip] = []
+        ip_atividades[ip].append((key, data))
+
+    for ip, acessos in ip_atividades.items():
+        acessos.sort(key=lambda x: x[1]) 
+
+        for i in range(len(acessos) - limite_requisicoes + 1):
+            inicio = acessos[i][1]
+            fim = acessos[i + limite_requisicoes - 1][1]
+            delta = (fim - inicio).total_seconds()
+
+            if delta <= intervalo_segundos:
+                caminho_suspeito = logs_post[acessos[i][0]]['caminho']
+                for j in range(i, i + limite_requisicoes):
+                    key = acessos[j][0]
+                    motivo = f"Tentativa de brute force detectada: {limite_requisicoes} requisições em {delta} segundos para {caminho_suspeito}"
+                    logs_post[key]['motivo'] = [motivo]
+                    logs_suspeitos[logs_post[key]['ip']].append({
+                        'requisicao': logs_post[key]['requisicao'],
+                        'motivo': logs_post[key]['motivo'],
+                        'data': logs_post[key]['data']
+                    })
+                break
+
+    return logs_suspeitos
+
+
+
+
     
 
 def processando_dados(file_path):
@@ -301,6 +354,10 @@ def processando_dados(file_path):
         "caminhos suspeitos": {
             "title": "Caminhos Suspeitos Identificados",
             "ips": identifica_caminhos_suspeitos(dicionario_log)
+        },
+        "brute force": {
+            "title": "Brute Force",
+            "ips": brute_force_senha(dicionario_log)
         }
 
     }
